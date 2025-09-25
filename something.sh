@@ -3,19 +3,22 @@
 # SSH KEX Error Filter - Simple Version
 # Filters out IPs with SSH key exchange errors
 
-echo "Testing SSH compatibility on IPs from ssh_ips.txt..."
+# Ask for input file
+read -p "Enter the filename containing IPs: " ip_file
 
 # Check if input file exists
-if [ ! -f "ssh_ips.txt" ]; then
-    echo "Error: ssh_ips.txt not found"
+if [ ! -f "$ip_file" ]; then
+    echo "Error: $ip_file not found"
     exit 1
 fi
+
+echo "Testing SSH compatibility on IPs from $ip_file..."
 
 # Clean output files
 > ssh_compatible.txt
 > ssh_kex_errors.txt
 
-total_ips=$(wc -l < ssh_ips.txt)
+total_ips=$(wc -l < "$ip_file")
 current=0
 
 while IFS= read -r ip; do
@@ -33,7 +36,7 @@ while IFS= read -r ip; do
         echo "$ip" >> ssh_compatible.txt  
         echo "OK"
     fi
-done < ssh_ips.txt
+done < "$ip_file"
 
 echo ""
 echo "Results:"
